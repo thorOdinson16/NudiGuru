@@ -1,0 +1,36 @@
+# Core Web Framework
+fastapi==0.121.2
+uvicorn==0.24.0
+python-multipart==0.0.20
+starlette==0.49.3
+
+# Audio Processing
+librosa==0.10.0
+pydub==0.25.1
+soundfile==0.13.1
+audioread==3.0.1
+scipy==1.11.4
+
+# Machine Learning & Deep Learning
+torch==2.8.0
+torchaudio==2.8.0
+transformers==4.57.0
+numpy==1.22.0
+
+# DTW (Dynamic Time Warping)
+dtw==1.4.0
+
+# TTS Dependencies
+TTS==0.22.0
+gruut==2.2.3
+gruut-ipa==0.13.0
+
+# General Dependencies
+tqdm==4.67.1
+requests==2.32.5
+pydantic==2.11.10
+python-dotenv==1.0.0
+aiofiles==24.1.0
+
+# Optional: For better performance
+numba==0.62.1

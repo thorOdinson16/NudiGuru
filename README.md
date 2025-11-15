@@ -121,15 +121,6 @@ Place the extracted model here:
 NudiGuru/backend/kn/
 ```
 
-The folder should contain:
-
-```
-config.json
-model.pth
-hifigan_generator.pth
-hifigan_config.json
-```
-
 Your backend will automatically load the model on startup.
 
 ---

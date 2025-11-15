@@ -1,0 +1,24 @@
+# Ignore everything
+*
+
+# Allow backend + its contents
+!/backend/
+!/backend/**
+backend/__pycache__/
+backend/temp_uploads/
+backend/tts_cache/
+backend/Voices/
+backend/kn/
+backend/venv/
+backend/env/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/WorkingPipeline/__pycache__
+backend/src/__pycache__
+backend/src/models/__pycache__
+backend/src/postprocessor/__pycache__
+backend/src/utils/__pycache__
+backend/HubertPipeline/__pycache__
+
+# Allow gitignore itself
+!.gitignore

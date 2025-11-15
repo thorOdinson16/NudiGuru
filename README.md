@@ -129,7 +129,7 @@ Your backend will automatically load the model on startup.
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/NudiGuru.git
+git clone https://github.com/thorOdinson16/NudiGuru.git
 cd NudiGuru
 ```
 

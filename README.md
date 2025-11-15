@@ -193,7 +193,6 @@ Generates (or retrieves cached) TTS audio for the lesson.
 
 ### `/battle/*` endpoints
 - Create battle
-- Join room
 - Upload audio
 - Score battle
 - Determine winner
@@ -222,11 +221,7 @@ A weighted average produces final accuracy.
 ## 📜 Credits & Acknowledgements
 
 ### IndicTTS
-The Kannada speech data and baseline models originate from the IndicTTS initiative under:
-- IIT Madras
-- C-DAC
-- TDIL Programme, MeitY (Govt. of India)
-
+The Kannada speech data and baseline models originate from the IndicTTS initiative.
 These assets were instrumental for building the FastPitch + HiFiGAN Kannada TTS model.
 
 ### Other Tools

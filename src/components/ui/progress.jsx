@@ -1,0 +1,1 @@
+export function Progress({value}){return <div style={{width:value+'%'}}></div>}

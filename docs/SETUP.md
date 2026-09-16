@@ -21,6 +21,14 @@ Verify: `python --version`, `node --version`, `psql --version`, `ffmpeg -version
 
 ### 1. Create and activate a virtual environment
 
+**Windows (CMD / Command Prompt)**
+
+```bat
+cd backend
+python -m venv .venv
+.venv\Scripts\activate.bat
+```
+
 **Windows (PowerShell)**
 
 ```powershell
@@ -58,7 +66,13 @@ HuBERT/TTS inference and set `TTS_DEVICE=cuda` in `.env`.
 
 ### 3. Configure environment
 
-**Windows**
+**Windows (CMD)**
+
+```bat
+copy .env.example .env
+```
+
+**Windows (PowerShell)**
 
 ```powershell
 Copy-Item .env.example .env
@@ -75,14 +89,22 @@ default is `postgresql+asyncpg://postgres:postgres@localhost:5432/nudiguru`.
 
 ### 4. Create the database and run migrations
 
-**Windows** (uses the `postgres` password you set during installation)
+**Windows (CMD or PowerShell)**
+
+```bat
+:: CMD (enter the postgres password when prompted)
+"C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres nudiguru
+```
 
 ```powershell
-# Create the database (enter the postgres password when prompted)
+# PowerShell
 & "C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres nudiguru
-# Then set DATABASE_URL in .env to match that password, e.g.
-#   postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/nudiguru
+```
 
+Then set `DATABASE_URL` in `.env` to match that password, e.g.
+`postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/nudiguru`, and run:
+
+```bat
 alembic upgrade head
 ```
 
@@ -143,8 +165,12 @@ npm install
 
 **Configure**
 
+```bat
+copy .env.example .env        # Windows CMD
+```
+
 ```powershell
-Copy-Item .env.example .env   # Windows
+Copy-Item .env.example .env   # Windows PowerShell
 ```
 
 ```bash
@@ -212,7 +238,12 @@ the current suite.
 - **`502`/connection errors from the frontend** — check `VITE_API_URL` and that
   the backend is running; CORS only allows origins in `CORS_ORIGINS`.
 - **Audio slicing errors** — install `ffmpeg` and ensure it is on PATH.
-- **Activation blocked on Windows** — run
+- **Cannot activate the venv in cmd** — in Command Prompt use
+  `.venv\Scripts\activate.bat` (or just `.venv\Scripts\activate`). The
+  `Activate.ps1` script only works in PowerShell; using it in cmd fails.
+- **Activation blocked in PowerShell** — run
   `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` then activate.
+- **"activate is not recognized"** — make sure you are inside the `backend`
+  directory (the path is relative), or call it with the full path.
 - **`createdb`/`psql` not found (Windows)** — use the full path under
   `C:\Program Files\PostgreSQL\<version>\bin\` or add it to PATH.

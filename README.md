@@ -79,6 +79,19 @@ Full instructions (including prerequisites and the TTS model): **[docs/SETUP.md]
 
 ### Backend
 
+**Windows (CMD / Command Prompt)**
+
+```bat
+cd backend
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -r requirements.txt
+copy .env.example .env
+"C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres nudiguru
+alembic upgrade head
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
 **Windows (PowerShell)**
 
 ```powershell
@@ -86,7 +99,7 @@ cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1          # if blocked: Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 pip install -r requirements.txt
-Copy-Item .env.example .env           # edit DATABASE_URL / JWT_SECRET
+Copy-Item .env.example .env
 & "C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres nudiguru
 alembic upgrade head
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
@@ -99,7 +112,7 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env                  # edit DATABASE_URL / JWT_SECRET
+cp .env.example .env
 sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
 sudo -u postgres createdb nudiguru
 alembic upgrade head
@@ -108,19 +121,14 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ### Frontend
 
-```powershell
+```bat
 cd frontend
 npm install
-Copy-Item .env.example .env           # Windows
+copy .env.example .env
 npm run dev
 ```
 
-```bash
-cd frontend
-npm install
-cp .env.example .env                  # Ubuntu
-npm run dev
-```
+The same commands work in PowerShell (use `Copy-Item` instead of `copy`) and Ubuntu (use `cp` instead of `copy`).
 
 Open <http://localhost:5173> and sign up. API docs: <http://localhost:8000/docs>.
 

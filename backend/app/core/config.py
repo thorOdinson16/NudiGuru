@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/nudiguru"
 
-    jwt_secret: str = "change-me-in-production"
+    jwt_secret: str = "change-me-in-production-use-a-long-random-secret-value"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 10080
 

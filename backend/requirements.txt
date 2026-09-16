@@ -31,8 +31,8 @@ torch==2.8.0
 torchaudio==2.8.0
 transformers==4.57.0
 
-# DTW (Dynamic Time Warping) - provides the `dtw` module
-dtw-python==1.4.0
+# DTW (Dynamic Time Warping) - provides the `dtw` module with tuple API
+dtw==1.4.0
 
 # TTS Dependencies
 TTS==0.22.0

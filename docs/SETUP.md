@@ -21,6 +21,13 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+`requirements.lock.txt` captures the exact versions of a fully verified working
+environment (including the ML stack). Use it if you need a reproducible install:
+
+```bash
+pip install -r requirements.lock.txt
+```
+
 If you have a CUDA GPU, install a matching PyTorch build for faster HuBERT/TTS
 inference and set `TTS_DEVICE=cuda` in `.env`.
 

@@ -1,0 +1,1 @@
+export function Button({children,...p}){return <button {...p}>{children}</button>}

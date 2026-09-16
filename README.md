@@ -29,7 +29,7 @@ pipelines, and highlights the syllables that need work.
 | --- | --- |
 | Backend | FastAPI, SQLAlchemy (async), Alembic, PostgreSQL |
 | Auth | bcrypt + PyJWT |
-| Speech ML | PyTorch, Transformers (HuBERT), librosa, dtw-python |
+| Speech ML | PyTorch, Transformers (HuBERT), librosa, dtw |
 | TTS | IndicTTS FastPitch + HiFi-GAN |
 | Frontend | React 18 (Vite), React Router, TanStack Query, Tailwind CSS, Framer Motion |
 
@@ -75,25 +75,50 @@ NudiGuru/
 
 ## Quick start
 
-Full instructions: **[docs/SETUP.md](docs/SETUP.md)**.
+Full instructions (including prerequisites and the TTS model): **[docs/SETUP.md](docs/SETUP.md)**.
 
 ### Backend
 
+**Windows (PowerShell)**
+
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1          # if blocked: Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+pip install -r requirements.txt
+Copy-Item .env.example .env           # edit DATABASE_URL / JWT_SECRET
+& "C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres nudiguru
+alembic upgrade head
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Ubuntu (bash)**
+
 ```bash
 cd backend
-python -m venv .venv && .venv\Scripts\Activate.ps1
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-copy .env.example .env          # edit DATABASE_URL / JWT_SECRET
+cp .env.example .env                  # edit DATABASE_URL / JWT_SECRET
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+sudo -u postgres createdb nudiguru
 alembic upgrade head
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### Frontend
 
+```powershell
+cd frontend
+npm install
+Copy-Item .env.example .env           # Windows
+npm run dev
+```
+
 ```bash
 cd frontend
 npm install
-copy .env.example .env
+cp .env.example .env                  # Ubuntu
 npm run dev
 ```
 
@@ -121,4 +146,4 @@ Open <http://localhost:5173> and sign up. API docs: <http://localhost:8000/docs>
 ## Credits
 
 - **IndicTTS** — Kannada speech data and baseline TTS models
-- HuBERT, Whisper, dtw-python, librosa, PyTorch & Transformers, FastAPI, React
+- HuBERT, dtw, librosa, PyTorch & Transformers, FastAPI, React

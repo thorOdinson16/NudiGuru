@@ -1,7 +1,7 @@
-"""Convert reference voice files (e.g. .ogg) into numbered .wav files.
+"""Convert reference voice files (e.g. .ogg) into word-id named .wav files.
 
-The pipelines expect reference recordings named by word id (``1.wav``,
-``2.wav`` ...) inside each speaker folder under ``Voices/``.
+The pipelines expect reference recordings named by word id (``w01.wav``,
+``w02.wav`` ...) inside each speaker folder under ``Voices/``.
 
 Usage:
     python -m app.scripts.convert_voices --folder "path/to/voices" --ext .ogg
@@ -24,8 +24,9 @@ def convert(folder: str, ext: str) -> None:
         if not number:
             continue
         audio = AudioSegment.from_file(os.path.join(folder, fname))
-        audio.export(os.path.join(folder, f"{number}.wav"), format="wav")
-        print(f"Converted {fname} -> {number}.wav")
+        out_name = f"w{int(number):02d}.wav"
+        audio.export(os.path.join(folder, out_name), format="wav")
+        print(f"Converted {fname} -> {out_name}")
 
 
 def main() -> None:

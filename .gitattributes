@@ -1,5 +1,6 @@
 * text=auto eol=lf
 
+# Model weights are distributed via GitHub Releases, not committed.
+# LFS filters are kept so they are handled correctly if ever tracked.
 *.pth filter=lfs diff=lfs merge=lfs -text
 *.ckpt filter=lfs diff=lfs merge=lfs -text
-*.wav filter=lfs diff=lfs merge=lfs -text

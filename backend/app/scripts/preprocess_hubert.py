@@ -27,7 +27,7 @@ def main() -> None:
             templates[word_id] = {s: [] for s in syllables}
 
             for speaker in speakers:
-                wav_path = VOICES_DIR / speaker / f"{int(word_id[1:])}.wav"
+                wav_path = VOICES_DIR / speaker / f"{word_id}.wav"
                 if not wav_path.exists():
                     continue
 

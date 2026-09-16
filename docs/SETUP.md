@@ -195,8 +195,9 @@ account on the Sign Up page — authentication is required to access app routes.
 ## Reference voices
 
 Reference recordings live under `backend/Voices/<Speaker>/<wordId>.wav`, e.g.
-`backend/Voices/PriyaF/1.wav` corresponds to lesson `w01`. Each speaker folder
-should contain one WAV per lesson id (`1.wav` … `15.wav`).
+`backend/Voices/PriyaF/w01.wav` corresponds to lesson `w01`. Each speaker folder
+should contain one WAV per lesson id (`w01.wav` … `w15.wav`). The eight bundled
+speakers are committed to the repository.
 
 To convert source recordings (e.g. `.ogg`) into the expected numbered WAVs
 (run from `backend/`, with the venv active):

@@ -65,7 +65,8 @@ missing it is simply skipped; if none are available the request fails with
 - **PostgreSQL** stores users, practice sessions, and per-lesson progress.
   Schema is managed with Alembic (`backend/alembic`).
 - **`backend/kn/`** holds the TTS weights (not committed).
-- **`backend/Voices/`** holds reference speaker recordings (not committed).
+- **`backend/Voices/`** holds reference speaker recordings (committed,
+  `<Speaker>/w01.wav` … `w15.wav`).
 - **`backend/storage/`** holds transient uploads and cached TTS audio
   (not committed). Uploads are deleted after each request.
 - Generated templates (`data/templates/*.json`) are derived from `Voices/` and

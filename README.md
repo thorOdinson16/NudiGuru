@@ -53,7 +53,7 @@ NudiGuru/
 │   ├── alembic/               # database migrations
 │   ├── tests/                 # pytest suite
 │   ├── kn/                    # TTS weights (not committed)
-│   ├── Voices/                # reference recordings (not committed)
+│   ├── Voices/                # reference recordings (w01.wav … w15.wav per speaker)
 │   ├── storage/               # uploads + TTS cache (not committed)
 │   ├── main.py                # `uvicorn main:app` entry point
 │   ├── requirements.txt

@@ -27,10 +27,10 @@ backend/kn/
 # Large generated data (regenerate via scripts/)
 backend/app/data/templates/*.json
 
-# Audio assets, uploads, caches
-backend/Voices/
+# Audio uploads / caches (reference Voices/ are committed)
 backend/storage/
 *.wav
+!backend/Voices/**/*.wav
 !backend/tests/fixtures/*.wav
 
 # OS / editors

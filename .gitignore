@@ -25,20 +25,11 @@ backend/kn/
 *.ckpt
 
 # Large generated data (regenerate via scripts/)
-backend/data/templates/*.json
 backend/app/data/templates/*.json
-backend/WorkingPipeline/syllable_templates.json
-backend/HubertPipeline/syllable_templates.json
-backend/app/pipelines/dtw/syllable_templates.json
-backend/app/pipelines/hubert/syllable_templates.json
-WhisperPipeline/syllable_templates.json
 
 # Audio assets, uploads, caches
 backend/Voices/
-backend/voices/
 backend/storage/
-backend/temp_uploads/
-backend/tts_cache/
 *.wav
 !backend/tests/fixtures/*.wav
 

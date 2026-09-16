@@ -67,8 +67,7 @@ NudiGuru/
 └── docs/
     ├── ARCHITECTURE.md
     ├── API.md
-    ├── SETUP.md
-    └── HACKATHON_GUIDE.md
+    └── SETUP.md
 ```
 
 ---

@@ -84,8 +84,10 @@ Copy-Item .env.example .env
 cp .env.example .env
 ```
 
-Edit `.env` and set `DATABASE_URL`, `JWT_SECRET`, and `CORS_ORIGINS`. The
-default is `postgresql+asyncpg://postgres:postgres@localhost:5432/nudiguru`.
+Edit `.env` and set `DATABASE_URL`, `JWT_SECRET`, and `CORS_ORIGINS`.
+`DATABASE_URL` ships with a placeholder password — replace
+`YOUR_POSTGRES_PASSWORD` with your PostgreSQL password, for example:
+`postgresql+asyncpg://postgres:mysecret@localhost:5432/nudiguru`.
 
 ### 4. Create the database and run migrations
 
@@ -235,6 +237,10 @@ the current suite.
 - **`503` from `/evaluate`** — templates missing; run the preprocess scripts.
 - **`503` from `/tts/*`** — TTS weights missing or `TTS_DEVICE` misconfigured.
 - **`401` on `/user/*`** — missing/expired token; sign in again.
+- **`InvalidPasswordError: password authentication failed for user "postgres"`**
+  — the password in `.env`'s `DATABASE_URL` does not match your PostgreSQL
+  password. Update it (replace `YOUR_POSTGRES_PASSWORD`) and re-run
+  `alembic upgrade head`.
 - **`502`/connection errors from the frontend** — check `VITE_API_URL` and that
   the backend is running; CORS only allows origins in `CORS_ORIGINS`.
 - **Audio slicing errors** — install `ffmpeg` and ensure it is on PATH.

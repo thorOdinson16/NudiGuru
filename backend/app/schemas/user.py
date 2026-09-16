@@ -12,6 +12,14 @@ class SessionOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ProgressOut(BaseModel):
+    lesson_id: str
+    best_accuracy: float
+    attempts: int
+
+    model_config = {"from_attributes": True}
+
+
 class UserStats(BaseModel):
     full_name: str
     email: str

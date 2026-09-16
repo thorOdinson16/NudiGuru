@@ -1,41 +1,11 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle2, Circle, Target, Play, Lock } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-// TEMP createPageUrl (remove when FastAPI routing ready)
-const createPageUrl = (p) => "/" + p;
-
-// TEMP API placeholders (replace with FastAPI fetch)
-const fetchLessons = async () => {
-  // Replace with FastAPI GET: /lessons
-  return [
-    {
-      id: 1,
-      order: 1,
-      title: "Greeting",
-      kannada_text: "ನಮಸ್ಕಾರ",
-      transliteration: "Namaskāra",
-      difficulty: "beginner",
-    },
-    {
-      id: 2,
-      order: 2,
-      title: "How are you?",
-      kannada_text: "ಹೇಗಿದ್ದೀಯ?",
-      transliteration: "Hēgiddīya?",
-      difficulty: "beginner",
-    },
-  ];
-};
-
-const fetchPracticeSessions = async () => {
-  // Replace with FastAPI GET: /practice-sessions
-  return [];
-};
+import { fetchLessons, fetchProgress } from "@/api/client";
 
 export default function Lessons() {
   const { data: lessons = [], isLoading } = useQuery({
@@ -43,18 +13,16 @@ export default function Lessons() {
     queryFn: fetchLessons,
   });
 
-  const { data: sessions = [] } = useQuery({
-    queryKey: ["practiceSessions"],
-    queryFn: fetchPracticeSessions,
+  const { data: progress = [] } = useQuery({
+    queryKey: ["progress"],
+    queryFn: fetchProgress,
   });
 
   const getLessonStatus = (lessonId) => {
-    const lessonSessions = sessions.filter((s) => s.lesson_id === lessonId);
-    if (lessonSessions.length === 0) return "not_attempted";
-
-    const bestScore = Math.max(...lessonSessions.map((s) => s.accuracy_score || 0));
-    if (bestScore >= 90) return "perfected";
-    if (bestScore >= 75) return "practiced";
+    const entry = progress.find((p) => p.lesson_id === lessonId);
+    if (!entry) return "not_attempted";
+    if (entry.best_accuracy >= 90) return "perfected";
+    if (entry.best_accuracy >= 75) return "practiced";
     return "attempted";
   };
 
@@ -137,7 +105,7 @@ export default function Lessons() {
             const status = getLessonStatus(lesson.id);
             return (
               <motion.div key={lesson.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }}>
-                <Link to={createPageUrl("Practice")}>
+                <Link to={`/Practice?lesson=${lesson.id}`}>
                   <Card className="shadow-lg hover:scale-105 transition cursor-pointer">
                     <CardContent className="p-6 flex gap-4">
                       <div>{getStatusIcon(status)}</div>

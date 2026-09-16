@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Trophy, Volume2, RotateCcw, Loader2 } from "lucide-react";
 
-const API_URL = "http://localhost:8000";
+import { evaluatePronunciation, fetchLessons, getTtsUrl } from "@/api/client";
+import { audioBufferToWav } from "@/lib/audio";
 
 /* ---------------------------------------------------------
    WAVEFORM VISUALIZER
@@ -26,71 +27,6 @@ function Wave({ active }) {
       ))}
     </div>
   );
-}
-
-/* ---------------------------------------------------------
-   HELPER: Audio Buffer to WAV
----------------------------------------------------------- */
-function audioBufferToWav(audioBuffer) {
-  const numberOfChannels = 1;
-  const sampleRate = 16000;
-  const length = audioBuffer.length;
-  const buffer = new ArrayBuffer(44 + length * 2);
-  const view = new DataView(buffer);
-
-  function writeString(view, offset, string) {
-    for (let i = 0; i < string.length; i++) {
-      view.setUint8(offset + i, string.charCodeAt(i));
-    }
-  }
-
-  writeString(view, 0, "RIFF");
-  view.setUint32(4, 36 + length * 2, true);
-  writeString(view, 8, "WAVE");
-  writeString(view, 12, "fmt ");
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true);
-  view.setUint16(22, numberOfChannels, true);
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * 2, true);
-  view.setUint16(32, 2, true);
-  view.setUint16(34, 16, true);
-  writeString(view, 36, "data");
-  view.setUint32(40, length * 2, true);
-
-  const channelData = audioBuffer.getChannelData(0);
-  let offset = 44;
-  for (let i = 0; i < length; i++) {
-    const sample = Math.max(-1, Math.min(1, channelData[i]));
-    view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
-    offset += 2;
-  }
-
-  return new Blob([buffer], { type: "audio/wav" });
-}
-
-/* ---------------------------------------------------------
-   API FUNCTIONS
----------------------------------------------------------- */
-async function fetchRandomLesson() {
-  const response = await fetch(`${API_URL}/lessons`);
-  if (!response.ok) throw new Error("Failed to fetch lessons");
-  const lessons = await response.json();
-  return lessons[Math.floor(Math.random() * lessons.length)];
-}
-
-async function evaluatePronunciation(audioBlob, lessonId) {
-  const formData = new FormData();
-  formData.append("audio", audioBlob, "recording.wav");
-  formData.append("lesson_id", lessonId);
-
-  const response = await fetch(`${API_URL}/evaluate`, {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!response.ok) throw new Error("Evaluation failed");
-  return response.json();
 }
 
 /* ---------------------------------------------------------
@@ -119,10 +55,12 @@ export default function PronounciationBattlePage() {
     }
 
     try {
-      const randomLesson = await fetchRandomLesson();
+      const lessons = await fetchLessons();
+      if (!lessons.length) throw new Error("No lessons available");
+      const randomLesson = lessons[Math.floor(Math.random() * lessons.length)];
       setLesson(randomLesson);
       setStep("player1");
-    } catch (error) {
+    } catch {
       alert("Failed to load lesson. Please try again.");
     }
   };
@@ -133,17 +71,9 @@ export default function PronounciationBattlePage() {
 
     try {
       setIsPlayingTTS(true);
-      const response = await fetch(`${API_URL}/tts/generate/${lesson.id}`);
-      if (!response.ok) throw new Error("TTS failed");
+      const audio = new Audio(getTtsUrl(lesson.id));
 
-      const blob = await response.blob();
-      const audioUrl = URL.createObjectURL(blob);
-      const audio = new Audio(audioUrl);
-
-      audio.onended = () => {
-        setIsPlayingTTS(false);
-        URL.revokeObjectURL(audioUrl);
-      };
+      audio.onended = () => setIsPlayingTTS(false);
 
       audio.onerror = () => {
         setIsPlayingTTS(false);

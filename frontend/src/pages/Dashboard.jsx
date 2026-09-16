@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -11,7 +11,7 @@ import {
   Award,
   ChevronRight,
   Swords,
-  Users
+  Users,
 } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,37 +19,14 @@ import ProgressRing from "@/components/ui/ProgressRing";
 import BottomStats from "@/components/ui/BottomStats";
 import { fetchUserStats } from "@/api/client";
 
-// Create URL
-const createPageUrl = (page) => "/" + page;
-
-/* ---------------- TEMP PRACTICE SESSIONS ---------------- */
-
-const fetchPracticeSessions = async () => {
-  return [
-    { accuracy_score: 95 },
-    { accuracy_score: 88 },
-    { accuracy_score: 92 },
-  ];
-};
-
-/* ------------------ DASHBOARD COMPONENT ------------------ */
-
 export default function Dashboard() {
   const [greeting, setGreeting] = useState("");
 
-  // Fetch user stats (FastAPI)
-  const { data: user } = useQuery({
-    queryKey: ["currentUser"],
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["userStats"],
     queryFn: fetchUserStats,
   });
 
-  // Fetch sessions
-  const { data: sessions = [] } = useQuery({
-    queryKey: ["practiceSessions"],
-    queryFn: fetchPracticeSessions,
-  });
-
-  // Greeting
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("ಶುಭೋದಯ");
@@ -60,7 +37,7 @@ export default function Dashboard() {
   const dailyProgress = user?.daily_practice_count || 0;
   const dailyGoal = user?.daily_goal || 10;
   const streak = user?.streak_days || 0;
-  const perfectSessions = sessions.filter((s) => s.accuracy_score >= 90).length;
+  const avgAccuracy = user?.avg_accuracy || 0;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -72,28 +49,23 @@ export default function Dashboard() {
     visible: { opacity: 1, y: 0 },
   };
 
-  /* ---------------------- JSX -------------------------- */
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500" />
+      </div>
+    );
+  }
 
   return (
     <>
-      <div className="
-          min-h-screen pb-40 
-          bg-gradient-to-br from-orange-100 via-white to-sky-200 
-          animate-gradient-slow 
-          transition-all
-        ">
+      <div className="min-h-screen pb-40 bg-gradient-to-br from-orange-100 via-white to-sky-200 animate-gradient-slow transition-all">
         <div className="max-w-6xl mx-auto px-4 py-8">
-
           {/* Greeting */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2 kannada-text">
               {greeting}, {user?.full_name || "Friend"}!
             </h1>
-
             <p className="text-lg text-gray-600">
               Ready to practice your Kannada pronunciation today?
             </p>
@@ -106,24 +78,16 @@ export default function Dashboard() {
             animate="visible"
             className="grid md:grid-cols-3 gap-6 mb-12"
           >
-            {/* Daily Progress */}
             <motion.div variants={itemVariants}>
               <Card className="glass-card border-0 shadow-lg hover:shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-orange-500" />
-                    ಇಂದಿನ ಪ್ರಗತಿ / Today’s Progress
+                    ಇಂದಿನ ಪ್ರಗತಿ / Today's Progress
                   </CardTitle>
                 </CardHeader>
-
                 <CardContent className="flex flex-col items-center pt-2">
-                  <ProgressRing
-                    progress={dailyProgress}
-                    total={dailyGoal}
-                    size={140}
-                    color="url(#gradient1)"
-                  />
-
+                  <ProgressRing progress={dailyProgress} total={dailyGoal} size={140} color="url(#gradient1)" />
                   <svg width="0" height="0">
                     <defs>
                       <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -132,13 +96,11 @@ export default function Dashboard() {
                       </linearGradient>
                     </defs>
                   </svg>
-
                   <p className="text-sm text-gray-600 mt-4">practices today</p>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Streak */}
             <motion.div variants={itemVariants}>
               <Card className="glass-card border-0 shadow-lg hover:shadow-xl">
                 <CardHeader>
@@ -147,7 +109,6 @@ export default function Dashboard() {
                     ಪ್ರಸ್ತುತ / Current Streak
                   </CardTitle>
                 </CardHeader>
-
                 <CardContent className="flex flex-col items-center">
                   <div className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-pink-500">
                     {streak}
@@ -157,21 +118,19 @@ export default function Dashboard() {
               </Card>
             </motion.div>
 
-            {/* Perfect Lessons */}
             <motion.div variants={itemVariants}>
               <Card className="glass-card border-0 shadow-lg hover:shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Award className="w-5 h-5 text-blue-500" />
-                    ಗಳಿಸಿದ ಅಂಕಗಳು / Scores Gained
+                    ಸರಾಸರಿ ನಿಖರತೆ / Average Accuracy
                   </CardTitle>
                 </CardHeader>
-
                 <CardContent className="flex flex-col items-center">
                   <div className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-cyan-500">
-                    {perfectSessions}
+                    {avgAccuracy}%
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">lessons mastered</p>
+                  <p className="text-sm text-gray-600 mt-2">across all practices</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -186,7 +145,6 @@ export default function Dashboard() {
             >
               ನಿಮ್ಮ ಕಲಿಕೆಯ ಪ್ರಯಾಣ / Your Learning Journey
             </motion.h2>
-
             <p className="text-gray-600 mb-8">
               Continue where you left off — choose your next learning action.
             </p>
@@ -199,17 +157,14 @@ export default function Dashboard() {
             animate="visible"
             className="grid md:grid-cols-3 gap-6"
           >
-            {/* Practice */}
             <motion.div variants={itemVariants}>
-              <Link to={createPageUrl("Practice")}>
+              <Link to="/Practice">
                 <Card className="glass-card border-0 shadow-lg hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group h-full relative overflow-hidden">
                   <CardContent className="p-8 flex flex-col items-center text-center">
                     <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center mb-4">
                       <Mic className="w-10 h-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      ಈಗ ಕಲಿಯೋಣ / Practice Now
-                    </h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">ಈಗ ಕಲಿಯೋಣ / Practice Now</h3>
                     <p className="text-gray-600 mb-4">
                       Start practicing your pronunciation with instant feedback
                     </p>
@@ -219,19 +174,16 @@ export default function Dashboard() {
               </Link>
             </motion.div>
 
-            {/* Lessons */}
             <motion.div variants={itemVariants}>
-              <Link to={createPageUrl("Lessons")}>
+              <Link to="/Lessons">
                 <Card className="glass-card border-0 shadow-lg hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group h-full relative overflow-hidden">
                   <CardContent className="p-8 flex flex-col items-center text-center">
                     <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mb-4">
                       <Library className="w-10 h-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                      ಪಾಠಗಳು / Lessons
-                    </h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">ಪಾಠಗಳು / Lessons</h3>
                     <p className="text-gray-600 mb-4">
-                      Browse 15 benchmark lessons at your own pace
+                      Browse benchmark lessons at your own pace
                     </p>
                     <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-green-500" />
                   </CardContent>
@@ -239,23 +191,19 @@ export default function Dashboard() {
               </Link>
             </motion.div>
 
-            {/* ❤️ NEW: Pronunciation Battle */}
             <motion.div variants={itemVariants}>
-              <Link to={createPageUrl("Battle")}>
+              <Link to="/Battle">
                 <Card className="glass-card border-0 shadow-lg hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group h-full relative overflow-hidden">
                   <CardContent className="p-8 flex flex-col items-center text-center">
                     <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center mb-4 shadow-lg">
                       <Swords className="w-10 h-10 text-white" />
                     </div>
-
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">
                       ಉಚ್ಚಾರಣೆ ಸಮರ / Pronunciation Battle
                     </h3>
-
                     <p className="text-gray-600 mb-4">
                       Compete with a friend and see who pronounces better
                     </p>
-
                     <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-purple-500" />
                   </CardContent>
                 </Card>
@@ -265,22 +213,17 @@ export default function Dashboard() {
             <motion.div variants={itemVariants}>
               <Link to="/Community">
                 <Card className="glass-card border-0 shadow-lg hover:shadow-2xl transition-all hover:scale-105 cursor-pointer group h-full relative overflow-hidden">
-
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-
                   <CardContent className="p-8 flex flex-col items-center text-center relative z-10">
                     <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 shadow-lg">
                       <Users className="w-10 h-10 text-white" />
                     </div>
-
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">ಬಳಗ / Community</h3>
                     <p className="text-gray-600 mb-4">
                       Join discussions, workshops & meet other learners
                     </p>
-
                     <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-purple-500" />
                   </CardContent>
-
                 </Card>
               </Link>
             </motion.div>
@@ -288,18 +231,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Bottom Sticky Stats */}
       <BottomStats
         userStats={{
           totalPractices: user?.total_practices || 0,
-          uniqueLessons: sessions?.length || 0,
-          avgAccuracy: Math.round(
-            sessions.length
-              ? sessions.reduce((s, x) => s + x.accuracy_score, 0) /
-                  sessions.length
-              : 0
-          ),
-          streak: user?.streak_days || 0,
+          uniqueLessons: user?.unique_lessons || 0,
+          avgAccuracy: avgAccuracy,
+          streak: streak,
         }}
       />
     </>

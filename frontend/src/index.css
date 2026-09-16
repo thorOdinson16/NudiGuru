@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .kannada-text {
+    font-family: "Noto Sans Kannada", "Nirmala UI", "Tunga", sans-serif;
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40;
+  }
+}
+
+@layer utilities {
+  @keyframes gradient-slow {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient-slow {
+    background-size: 200% 200%;
+    animation: gradient-slow 12s ease infinite;
+  }
+}

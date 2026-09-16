@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import PracticeSession, User
+from app.db.models import LessonProgress, PracticeSession, User
 from app.db.session import get_db
-from app.schemas.user import SessionOut, UserStats
+from app.schemas.user import ProgressOut, SessionOut, UserStats
 
 from .deps import get_current_user
 
@@ -61,3 +61,14 @@ def _compute_streak(days: set, today) -> int:
         streak += 1
         cursor -= timedelta(days=1)
     return streak
+
+
+@router.get("/progress", response_model=list[ProgressOut])
+async def get_progress(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> list[ProgressOut]:
+    result = await db.execute(
+        select(LessonProgress).where(LessonProgress.user_id == user.id)
+    )
+    return [ProgressOut.model_validate(p) for p in result.scalars().all()]
